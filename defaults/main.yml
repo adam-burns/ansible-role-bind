@@ -15,7 +15,7 @@ bind_dns_keys: []
 # List of IPv4 address of the network interface(s) to listen on. Set to "any"
 # to listen on all interfaces
 bind_listen_ipv4:
-  - "127.0.0.1"
+  - "any"
 
 # The list of ports to listen on for IPv4 addresses
 bind_listen_ipv4_port:
@@ -23,7 +23,7 @@ bind_listen_ipv4_port:
 
 # List of IPv6 address of the network interface(s) to listen on.
 bind_listen_ipv6:
-  - "::1"
+  - "any"
 
 # The list of ports to listen on for IPv6 addresses
 bind_listen_ipv6_port:
@@ -31,7 +31,7 @@ bind_listen_ipv6_port:
 
 # List of hosts that are allowed to query this DNS server.
 bind_allow_query:
-  - "localhost"
+  - "any"
 
 # A key-value list mapping server-IPs to TSIG keys for signing requests
 bind_key_mapping: {}
