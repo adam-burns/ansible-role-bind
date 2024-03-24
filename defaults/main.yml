@@ -60,7 +60,7 @@ bind_statistics_allow:
 
 # DNSSEC configuration
 bind_dnssec_enable: false
-bind_dnssec_validation: true
+bind_dnssec_validation: "yes"
 
 bind_extra_include_files: []
 
