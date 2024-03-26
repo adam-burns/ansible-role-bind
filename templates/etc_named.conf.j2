@@ -135,6 +135,9 @@ zone "{{ bind_zone.name }}" IN {
 {% else %}
   allow-update { none; };
 {% endif %}
+{% if bind_zone.update_policy is defined %}
+  update-policy { {{ bind_zone.update_policy|join('; ') }}; };
+{% endif %}
 {% elif _type == 'secondary' %}
   type slave;
   masters { {{ bind_zone.primaries|join('; ') }}; };
