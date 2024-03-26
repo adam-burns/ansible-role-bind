@@ -127,6 +127,9 @@ zone "{{ bind_zone.name }}" IN {
   type master;
   file "{{ bind_zone_dir }}/{{ bind_zone.name }}";
   key-directory "{{ bind_zone_dir }}";
+{% if bind_zone.auto_dnssec is defined %}
+  auto-dnssec {{ bind_zone.auto_dnssec }};
+{% endif %}
   notify yes;
 {% if bind_zone.also_notify is defined %}
   also-notify  { {{ bind_zone.also_notify|join('; ') }}; };
