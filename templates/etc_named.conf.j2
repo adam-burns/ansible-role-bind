@@ -132,11 +132,13 @@ zone "{{ bind_zone.name }}" IN {
 {% endif %}
 {% if bind_zone.allow_update is defined %}
   allow-update { {{ bind_zone.allow_update|join('; ') }}; };
-{% else %}
-  allow-update { none; };
 {% endif %}
-{% if bind_zone.update_policy is defined %}
-  update-policy { {{ bind_zone.update_policy|join('; ') }}; };
+{% if bind_zone.update_policy_sig0 is defined %}
+  update-policy {
+    grant "{{ bind_zone.name }}" name {{ bind_zone.name }}. ANY;
+    grant "{{ bind_zone.name }}" subdomain {{ bind_zone.name }}. ANY;
+    grant * selfsub . ANY;
+  };
 {% endif %}
 {% elif _type == 'secondary' %}
   type slave;
