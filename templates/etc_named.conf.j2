@@ -38,6 +38,8 @@ options {
 
   rrset-order { order {{ bind_rrset_order }}; };
 
+{% if allow_new_zones is defined %}  allow-new-zones {{ allow_new_zones }}; // enables rndc zone management{% endif %}
+
 {% if bind_dnssec_enable %}  dnssec-enable {{ bind_dnssec_enable }};{% endif %}
   dnssec-validation {{ bind_dnssec_validation }};
 
