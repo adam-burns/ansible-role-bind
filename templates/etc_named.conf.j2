@@ -127,8 +127,13 @@ include "{{ file }}";
 zone "{{ bind_zone.name }}" IN {
 {% if _type == 'primary' %}
   type master;
+{% if bind_zone_subdirs is defined and bind_zone_subdirs %}
+  file "{{ bind_zone_dir }}/{{ bind_zone.name }}/{{ bind_zone.name }}";
+  key-directory "{{ bind_zone_dir }}/{{ bind_zone.name }}";
+{% else %}
   file "{{ bind_zone_dir }}/{{ bind_zone.name }}";
   key-directory "{{ bind_zone_dir }}";
+{% endif %}
 {% if bind_zone.auto_dnssec is defined %}
   auto-dnssec {{ bind_zone.auto_dnssec }};
 {% endif %}

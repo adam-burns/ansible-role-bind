@@ -78,7 +78,50 @@
     label: "{{ item.1.name |default(item.0.cmd.split(' ')[4]) }}"
   tags: bind
 
-- name: Create forward lookup zone file
+- name: Create per zone directories
+  ansible.builtin.file:
+    path: "{{ bind_zone_dir }}/{{ item.name }}"
+    state: directory
+    owner: "{{ bind_owner }}"
+    group: "{{ bind_group }}"
+    mode: "{{ bind_zone_file_mode }}"
+    setype: named_zone_t
+  become: yes
+  with_items:
+    - "{{ bind_zones }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: >
+    (bind_zone_subdirs and (item.create_forward_zones is not defined or item.create_forward_zones) and
+    ((item.type is defined and item.type == 'primary') or
+    (item.type is not defined and item.primaries is defined and
+    (host_all_addresses | intersect(item.primaries) | length > 0))))
+  notify: reload bind
+  tags: bind
+
+- name: Create forward lookup zone file with subdirs
+  template:
+    src: bind_zone.j2
+    dest: "{{ bind_zone_dir }}/{{ item.name }}/{{ item.name }}"
+    owner: "{{ bind_owner }}"
+    group: "{{ bind_group }}"
+    mode: "{{ bind_zone_file_mode }}"
+    setype: named_zone_t
+    validate: 'named-checkzone -d {{ item.name }} %s'
+  become: yes
+  with_items:
+    - "{{ bind_zones }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: >
+    (bind_zone_subdirs and (item.create_forward_zones is not defined or item.create_forward_zones) and
+    ((item.type is defined and item.type == 'primary') or
+    (item.type is not defined and item.primaries is defined and
+    (host_all_addresses | intersect(item.primaries) | length > 0))))
+  notify: reload bind
+  tags: bind
+
+- name: Create forward lookup zone file without subdirs
   template:
     src: bind_zone.j2
     dest: "{{ bind_zone_dir }}/{{ item.name }}"
@@ -93,10 +136,10 @@
   loop_control:
     label: "{{ item.name }}"
   when: >
-    (item.create_forward_zones is not defined or item.create_forward_zones) and
+    (bind_zone_subdirs is not defined and (item.create_forward_zones is not defined or item.create_forward_zones) and
     ((item.type is defined and item.type == 'primary') or
     (item.type is not defined and item.primaries is defined and
-    (host_all_addresses | intersect(item.primaries) | length > 0)))
+    (host_all_addresses | intersect(item.primaries) | length > 0))))
   notify: reload bind
   tags: bind
 
