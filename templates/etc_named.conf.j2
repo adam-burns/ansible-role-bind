@@ -137,6 +137,9 @@ zone "{{ bind_zone.name }}" IN {
 {% if bind_zone.auto_dnssec is defined %}
   auto-dnssec {{ bind_zone.auto_dnssec }};
 {% endif %}
+{% if bind_zone.dnssec_policy_default is defined %}
+  dnssec-policy "default";
+{% endif %}
   notify yes;
 {% if bind_zone.check_names is defined %}
   check-names {{ bind_zone.check_names }};
