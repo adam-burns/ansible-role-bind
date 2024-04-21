@@ -105,6 +105,13 @@ $TTL {{ _zone_data['ttl'] }}
 {% endfor %}
 {% endif %}
 {% endif %}
+
+{% if item.add_sig0_key is defined and item.add_sig0_key %}
+{% if sig0_keyRR is defined %}
+{{ sig0_keyRR.stdout }}
+{% endif %}
+{% endif %}
+
 {% if host.aliases is defined %}
 {% for alias in host.aliases %}
 {% if "$GENERATE" not in host.name.upper() %}
